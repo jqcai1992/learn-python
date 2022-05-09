@@ -1,0 +1,157 @@
+
+
+#  四种方法跳出多重共循环
+
+
+
+## 1.	Flag法
+
+
+
+```python
+flag = True
+
+for i in range(3):
+    for j in range(3):
+        for k in range(3):
+            print(i, j, k)
+            if i == j == k == 1:
+                flag = False
+                print('break')
+                break
+        if not flag:
+            break
+    if not flag:
+        break
+
+```
+
+## 2. 循环的else分支 ：for和while循环中else会在循环终止时候运行
+
+```python
+for i in range(3):
+    for j in range(3):
+        for k in range(3):
+            print(i, j, k)
+            if i == j == k == 1:
+                print('break')
+                break
+        else:
+            continue
+        break
+    else:
+        continue
+    break
+```
+
+
+
+else会在循环终止时候执行，但是遇到break会和for一起跳出循环，所以一旦找到因子，就会跳出循环，但是没有找到因子，循环结束，就会打印质数
+
+```python
+for n in range(2, 10):
+    for x in range(2, n):
+        if n % x == 0:
+            print( n, 'equals', x, '*', n/x)
+            break
+    else:
+        # loop fell through without finding a factor
+        print(n, 'is a prime number')
+
+2 is a prime number
+3 is a prime number
+4 equals 2 * 2.0
+4 is a prime number
+5 is a prime number
+6 equals 2 * 3.0
+6 equals 3 * 2.0
+6 is a prime number
+7 is a prime number
+8 equals 2 * 4.0
+8 equals 4 * 2.0
+8 is a prime number
+9 equals 3 * 3.0
+9 is a prime number
+```
+
+```python
+for n in range(2, 10):
+    for x in range(2, n):
+        if n % x == 0:
+            print( n, 'equals', x, '*', n/x)
+            break
+    else:
+        # loop fell through without finding a factor
+        print(n, 'is a prime number')
+        continue
+    break
+
+2 is a prime number
+3 is a prime number
+4 equals 2 * 2.0
+```
+
+
+
+##  3. 函数return
+
+```python
+def loop():
+    for i in range(3):
+        for j in range(3):
+            for k in range(3):
+                print(i, j, k)
+                if i == j == k == 1:
+                    print('break')
+                    return
+
+loop()
+
+```
+
+## 4. 抛出异常
+
+```python
+class Break(Exception):
+    pass
+
+try:
+    for i in range(3):
+        for j in range(3):
+            for k in range(3):
+                print(i, j, k)
+                if i == j == k == 1:
+                    raise Break('break')
+except Break as e:
+    print(e)
+
+```
+
+raise引发异常，然后循环终止，再使用try，except这个语法结构来捕捉这个异常。
+
+下面一个例子讲明如何捕捉不同异常
+
+
+
+```python
+def div(a, b):
+    try:
+        print(a / b)
+    except ZeroDivisionError:
+        print("Error: b should not be 0 !!")
+    except Exception as e:
+        print("Unexpected Error: {}".format(e))
+    else:
+        print('Run into else only when everything goes well')
+    finally:
+        print('Always run into finally block.')
+div(1,0)
+div(1,'a')
+
+run:
+Error: b should not be 0 !!
+Always run into finally block.
+Unexpected Error: unsupported operand type(s) for /: 'int' and 'str'
+Always run into finally block.
+```
+
